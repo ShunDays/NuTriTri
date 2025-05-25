@@ -13,7 +13,15 @@ export function AddMealForm({ onAddMeal, foodReferences }: AddMealFormProps) {
   const [selectedFood, setSelectedFood] = useState<string>('')
   const [quantity, setQuantity] = useState<number>(100)
   const [showSearch, setShowSearch] = useState(false)
+  const [showManualAdd, setShowManualAdd] = useState(false)
   const [step, setStep] = useState<'name' | 'foods' | 'review'>('name')
+  
+  // États pour l'ajout manuel d'aliment
+  const [manualFoodName, setManualFoodName] = useState('')
+  const [manualCalories, setManualCalories] = useState<number>(0)
+  const [manualProteins, setManualProteins] = useState<number>(0)
+  const [manualCarbs, setManualCarbs] = useState<number>(0)
+  const [manualFats, setManualFats] = useState<number>(0)
 
   const handleAddFood = () => {
     if (!selectedFood || !quantity) return
@@ -76,6 +84,43 @@ export function AddMealForm({ onAddMeal, foodReferences }: AddMealFormProps) {
     carbs: acc.carbs + food.carbs,
     fats: acc.fats + food.fats
   }), { calories: 0, proteins: 0, carbs: 0, fats: 0 })
+
+  const handleManualAddFood = () => {
+    if (!manualFoodName || !quantity) return
+
+    const newFoodRef: FoodReference = {
+      id: Date.now().toString(),
+      name: manualFoodName,
+      calories: manualCalories,
+      proteins: manualProteins,
+      carbs: manualCarbs,
+      fats: manualFats,
+      unit: 'g'
+    }
+
+    foodReferences.push(newFoodRef)
+
+    const ratio = quantity / 100
+    const newFood: Food = {
+      id: Date.now().toString(),
+      referenceId: newFoodRef.id,
+      name: newFoodRef.name,
+      quantity,
+      calories: Math.round(newFoodRef.calories * ratio),
+      proteins: Math.round(newFoodRef.proteins * ratio * 10) / 10,
+      carbs: Math.round(newFoodRef.carbs * ratio * 10) / 10,
+      fats: Math.round(newFoodRef.fats * ratio * 10) / 10
+    }
+
+    setFoods([...foods, newFood])
+    setManualFoodName('')
+    setManualCalories(0)
+    setManualProteins(0)
+    setManualCarbs(0)
+    setManualFats(0)
+    setQuantity(100)
+    setShowManualAdd(false)
+  }
 
   return (
     <div className="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-sm">
@@ -158,14 +203,125 @@ export function AddMealForm({ onAddMeal, foodReferences }: AddMealFormProps) {
             <div className="flex space-x-4">
               <button
                 type="button"
-                onClick={() => setShowSearch(!showSearch)}
+                onClick={() => {
+                  setShowSearch(!showSearch)
+                  setShowManualAdd(false)
+                }}
                 className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
                 {showSearch ? 'Annuler la recherche' : '🔍 Rechercher un aliment'}
               </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowManualAdd(!showManualAdd)
+                  setShowSearch(false)
+                }}
+                className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                {showManualAdd ? 'Annuler' : '➕ Ajouter manuellement'}
+              </button>
             </div>
 
-            {showSearch ? (
+            {showManualAdd ? (
+              <div className="space-y-4 bg-gray-50 p-4 rounded-md">
+                <div>
+                  <label htmlFor="manualFoodName" className="block text-sm font-medium text-gray-700">
+                    Nom de l'aliment
+                  </label>
+                  <input
+                    type="text"
+                    id="manualFoodName"
+                    value={manualFoodName}
+                    onChange={(e) => setManualFoodName(e.target.value)}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                    placeholder="Ex: Riz basmati"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="manualCalories" className="block text-sm font-medium text-gray-700">
+                      Calories (kcal/100g)
+                    </label>
+                    <input
+                      type="number"
+                      id="manualCalories"
+                      value={manualCalories}
+                      onChange={(e) => setManualCalories(Number(e.target.value))}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                      min="0"
+                      step="1"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="manualProteins" className="block text-sm font-medium text-gray-700">
+                      Protéines (g/100g)
+                    </label>
+                    <input
+                      type="number"
+                      id="manualProteins"
+                      value={manualProteins}
+                      onChange={(e) => setManualProteins(Number(e.target.value))}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                      min="0"
+                      step="0.1"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="manualCarbs" className="block text-sm font-medium text-gray-700">
+                      Glucides (g/100g)
+                    </label>
+                    <input
+                      type="number"
+                      id="manualCarbs"
+                      value={manualCarbs}
+                      onChange={(e) => setManualCarbs(Number(e.target.value))}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                      min="0"
+                      step="0.1"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="manualFats" className="block text-sm font-medium text-gray-700">
+                      Lipides (g/100g)
+                    </label>
+                    <input
+                      type="number"
+                      id="manualFats"
+                      value={manualFats}
+                      onChange={(e) => setManualFats(Number(e.target.value))}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                      min="0"
+                      step="0.1"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label htmlFor="manualQuantity" className="block text-sm font-medium text-gray-700">
+                    Quantité (g)
+                  </label>
+                  <input
+                    type="number"
+                    id="manualQuantity"
+                    value={quantity}
+                    onChange={(e) => setQuantity(Number(e.target.value))}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                    min="0"
+                    step="1"
+                  />
+                </div>
+                <div className="flex justify-end">
+                  <button
+                    type="button"
+                    onClick={handleManualAddFood}
+                    disabled={!manualFoodName || !quantity}
+                    className="inline-flex justify-center rounded-md border border-transparent bg-blue-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Ajouter l'aliment
+                  </button>
+                </div>
+              </div>
+            ) : showSearch ? (
               <FoodSearch onSelectFood={handleSelectFoodFromSearch} />
             ) : (
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
