@@ -6,6 +6,10 @@ import { AddMealForm } from './components/AddMealForm'
 import { MealList } from './components/MealList'
 import { NutritionStats } from './components/NutritionStats'
 import { FoodDatabase } from './components/FoodDatabase'
+import Goals from './pages/Goals'
+import Preferences from './pages/Preferences'
+import Recipes from './pages/Recipes'
+import Menus from './pages/Menus'
 
 const defaultGoals: NutritionGoals = {
   calories: 2000,
@@ -49,7 +53,7 @@ function App() {
   const [goals, setGoals] = useLocalStorage<NutritionGoals>('goals', defaultGoals)
   const [foodReferences, setFoodReferences] = useLocalStorage<FoodReference[]>('foodReferences', defaultFoodReferences)
   const [showAddMeal, setShowAddMeal] = useState(false)
-  const [currentView, setCurrentView] = useState<'dashboard' | 'history' | 'goals' | 'foods'>('dashboard')
+  const [currentView, setCurrentView] = useState<'dashboard' | 'history' | 'goals' | 'foods' | 'preferences' | 'recipes' | 'menus'>('dashboard')
 
   const handleAddMeal = (newMeal: Meal) => {
     setMeals([...meals, newMeal])
@@ -137,53 +141,13 @@ function App() {
           </div>
         )
       case 'goals':
-        return (
-          <div className="bg-white shadow rounded-lg p-6">
-            <h2 className="text-lg font-medium text-gray-900 mb-6">Objectifs nutritionnels</h2>
-            <div className="space-y-4">
-              <div>
-                <label htmlFor="calories" className="block text-sm font-medium text-gray-700">Calories (kcal)</label>
-                <input
-                  type="number"
-                  id="calories"
-                  value={goals.calories}
-                  onChange={(e) => setGoals({ ...goals, calories: Number(e.target.value) })}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                />
-              </div>
-              <div>
-                <label htmlFor="proteins" className="block text-sm font-medium text-gray-700">Protéines (g)</label>
-                <input
-                  type="number"
-                  id="proteins"
-                  value={goals.proteins}
-                  onChange={(e) => setGoals({ ...goals, proteins: Number(e.target.value) })}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                />
-              </div>
-              <div>
-                <label htmlFor="carbs" className="block text-sm font-medium text-gray-700">Glucides (g)</label>
-                <input
-                  type="number"
-                  id="carbs"
-                  value={goals.carbs}
-                  onChange={(e) => setGoals({ ...goals, carbs: Number(e.target.value) })}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                />
-              </div>
-              <div>
-                <label htmlFor="fats" className="block text-sm font-medium text-gray-700">Lipides (g)</label>
-                <input
-                  type="number"
-                  id="fats"
-                  value={goals.fats}
-                  onChange={(e) => setGoals({ ...goals, fats: Number(e.target.value) })}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                />
-              </div>
-            </div>
-          </div>
-        )
+        return <Goals />
+      case 'preferences':
+        return <Preferences />
+      case 'recipes':
+        return <Recipes />
+      case 'menus':
+        return <Menus />
       case 'foods':
         return (
           <div className="bg-white shadow rounded-lg p-6">
@@ -202,7 +166,7 @@ function App() {
     <div className="min-h-screen bg-gray-50">
       <Navigation 
         currentView={currentView}
-        onViewChange={setCurrentView}
+        onViewChange={(view) => setCurrentView(view as typeof currentView)}
         onAddMeal={() => setShowAddMeal(true)}
       />
       

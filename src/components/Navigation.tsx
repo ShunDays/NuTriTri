@@ -48,6 +48,36 @@ export function Navigation({ currentView, onViewChange, onAddMeal }: NavigationP
               >
                 Objectifs
               </button>
+              <button
+                onClick={() => onViewChange('recipes')}
+                className={`${
+                  currentView === 'recipes'
+                    ? 'border-blue-500 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-blue-600'
+                } inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium`}
+              >
+                Recettes
+              </button>
+              <button
+                onClick={() => onViewChange('menus')}
+                className={`${
+                  currentView === 'menus'
+                    ? 'border-blue-500 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-blue-600'
+                } inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium`}
+              >
+                Menus
+              </button>
+              <button
+                onClick={() => onViewChange('preferences')}
+                className={`${
+                  currentView === 'preferences'
+                    ? 'border-blue-500 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-blue-600'
+                } inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium`}
+              >
+                Préférences
+              </button>
             </div>
           </div>
           <div className="hidden sm:ml-6 sm:flex sm:items-center">
@@ -144,6 +174,45 @@ export function Navigation({ currentView, onViewChange, onAddMeal }: NavigationP
               } block pl-3 pr-4 py-2 border-l-4 text-base font-medium`}
             >
               Objectifs
+            </button>
+            <button
+              onClick={() => {
+                onViewChange('recipes')
+                setIsOpen(false)
+              }}
+              className={`${
+                currentView === 'recipes'
+                  ? 'bg-blue-50 border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-blue-600'
+              } block pl-3 pr-4 py-2 border-l-4 text-base font-medium`}
+            >
+              Recettes
+            </button>
+            <button
+              onClick={() => {
+                onViewChange('menus')
+                setIsOpen(false)
+              }}
+              className={`${
+                currentView === 'menus'
+                  ? 'bg-blue-50 border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-blue-600'
+              } block pl-3 pr-4 py-2 border-l-4 text-base font-medium`}
+            >
+              Menus
+            </button>
+            <button
+              onClick={() => {
+                onViewChange('preferences')
+                setIsOpen(false)
+              }}
+              className={`${
+                currentView === 'preferences'
+                  ? 'bg-blue-50 border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-blue-600'
+              } block pl-3 pr-4 py-2 border-l-4 text-base font-medium`}
+            >
+              Préférences
             </button>
           </div>
           <div className="pt-4 pb-3 border-t border-gray-200">

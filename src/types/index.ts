@@ -39,4 +39,33 @@ export interface DailyNutrition {
   totalProteins: number;
   totalCarbs: number;
   totalFats: number;
+}
+
+export interface MenuDay {
+  date: string;
+  meals: Meal[];
+}
+
+export interface Menu {
+  id: string;
+  name: string;
+  days: MenuDay[];
+}
+
+export interface RecipeIngredient {
+  food: FoodReference;
+  quantity: number;
+}
+
+export interface Recipe {
+  id: string;
+  name: string;
+  description?: string;
+  ingredients: RecipeIngredient[];
+}
+
+export interface UserPreferences {
+  allergies: string[];
+  dislikes: string[];
+  preferredFoods: string[];
 } 
