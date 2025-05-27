@@ -54,7 +54,7 @@ export function NutritionStats({ goals, current }: NutritionStatsProps) {
             <dl>
               <dt className="text-sm font-medium text-gray-500 truncate">Protéines</dt>
               <dd>
-                <div className="text-lg font-medium text-gray-900">{current.proteins}g / {goals.proteins}g</div>
+                <div className="text-lg font-medium text-gray-900">{current.proteins.toFixed(1)}g / {goals.proteins.toFixed(1)}g</div>
                 <div className="mt-1">
                   <div className="overflow-hidden rounded-full bg-gray-200">
                     <div
@@ -80,7 +80,7 @@ export function NutritionStats({ goals, current }: NutritionStatsProps) {
             <dl>
               <dt className="text-sm font-medium text-gray-500 truncate">Glucides</dt>
               <dd>
-                <div className="text-lg font-medium text-gray-900">{current.carbs}g / {goals.carbs}g</div>
+                <div className="text-lg font-medium text-gray-900">{current.carbs.toFixed(1)}g / {goals.carbs.toFixed(1)}g</div>
                 <div className="mt-1">
                   <div className="overflow-hidden rounded-full bg-gray-200">
                     <div
@@ -106,7 +106,7 @@ export function NutritionStats({ goals, current }: NutritionStatsProps) {
             <dl>
               <dt className="text-sm font-medium text-gray-500 truncate">Lipides</dt>
               <dd>
-                <div className="text-lg font-medium text-gray-900">{current.fats}g / {goals.fats}g</div>
+                <div className="text-lg font-medium text-gray-900">{current.fats.toFixed(1)}g / {goals.fats.toFixed(1)}g</div>
                 <div className="mt-1">
                   <div className="overflow-hidden rounded-full bg-gray-200">
                     <div

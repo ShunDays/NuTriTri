@@ -44,9 +44,9 @@ export default function Goals() {
       ) : (
         <div className="space-y-2">
           <div>Calories : <b>{goals.calories}</b> kcal</div>
-          <div>Protéines : <b>{goals.proteins}</b> g</div>
-          <div>Glucides : <b>{goals.carbs}</b> g</div>
-          <div>Lipides : <b>{goals.fats}</b> g</div>
+          <div>Protéines : <b>{goals.proteins.toFixed(1)}</b> g</div>
+          <div>Glucides : <b>{goals.carbs.toFixed(1)}</b> g</div>
+          <div>Lipides : <b>{goals.fats.toFixed(1)}</b> g</div>
           <button onClick={() => setEdit(true)} className="mt-4 bg-gray-200 px-4 py-2 rounded">Modifier</button>
         </div>
       )}

@@ -86,13 +86,13 @@ export function FoodSearch({ onSelectFood }: FoodSearchProps) {
                   {food.product.nutriments.energy} kcal/100g
                 </span>
                 <span className="inline-block bg-gray-100 text-gray-800 px-2 py-0.5 rounded mr-2">
-                  P: {food.product.nutriments.proteins}g
+                  P: {Number(food.product.nutriments.proteins).toFixed(1)}g
                 </span>
                 <span className="inline-block bg-gray-100 text-gray-800 px-2 py-0.5 rounded mr-2">
-                  G: {food.product.nutriments.carbohydrates}g
+                  G: {Number(food.product.nutriments.carbohydrates).toFixed(1)}g
                 </span>
                 <span className="inline-block bg-gray-100 text-gray-800 px-2 py-0.5 rounded">
-                  L: {food.product.nutriments.fat}g
+                  L: {Number(food.product.nutriments.fat).toFixed(1)}g
                 </span>
               </div>
             </button>

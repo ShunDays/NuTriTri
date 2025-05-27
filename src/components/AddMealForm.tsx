@@ -375,19 +375,19 @@ export function AddMealForm({ onAddMeal, foodReferences }: AddMealFormProps) {
                   <div>
                     <p className="text-sm text-gray-500">Protéines</p>
                     <p className="text-sm font-medium text-gray-900">
-                      {Math.round(selectedFoodRef.proteins * quantity / 100 * 10) / 10}g
+                      {(selectedFoodRef.proteins * quantity / 100).toFixed(1)}g
                     </p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Glucides</p>
                     <p className="text-sm font-medium text-gray-900">
-                      {Math.round(selectedFoodRef.carbs * quantity / 100 * 10) / 10}g
+                      {(selectedFoodRef.carbs * quantity / 100).toFixed(1)}g
                     </p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Lipides</p>
                     <p className="text-sm font-medium text-gray-900">
-                      {Math.round(selectedFoodRef.fats * quantity / 100 * 10) / 10}g
+                      {(selectedFoodRef.fats * quantity / 100).toFixed(1)}g
                     </p>
                   </div>
                 </div>
@@ -461,15 +461,15 @@ export function AddMealForm({ onAddMeal, foodReferences }: AddMealFormProps) {
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Protéines</p>
-                    <p className="text-sm font-medium text-gray-900">{totalNutrition.proteins}g</p>
+                    <p className="text-sm font-medium text-gray-900">{totalNutrition.proteins.toFixed(1)}g</p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Glucides</p>
-                    <p className="text-sm font-medium text-gray-900">{totalNutrition.carbs}g</p>
+                    <p className="text-sm font-medium text-gray-900">{totalNutrition.carbs.toFixed(1)}g</p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Lipides</p>
-                    <p className="text-sm font-medium text-gray-900">{totalNutrition.fats}g</p>
+                    <p className="text-sm font-medium text-gray-900">{totalNutrition.fats.toFixed(1)}g</p>
                   </div>
                 </div>
               </div>
