@@ -10,6 +10,7 @@ import Goals from './pages/Goals'
 import Preferences from './pages/Preferences'
 import Recipes from './pages/Recipes'
 import Menus from './pages/Menus'
+import { Toast } from './components/Toast'
 
 const defaultGoals: NutritionGoals = {
   calories: 2000,
@@ -54,26 +55,32 @@ function App() {
   const [foodReferences, setFoodReferences] = useLocalStorage<FoodReference[]>('foodReferences', defaultFoodReferences)
   const [showAddMeal, setShowAddMeal] = useState(false)
   const [currentView, setCurrentView] = useState<'dashboard' | 'history' | 'goals' | 'foods' | 'preferences' | 'recipes' | 'menus'>('dashboard')
+  const [toast, setToast] = useState<{ message: string, type?: 'success' | 'error' | 'info' } | null>(null)
 
   const handleAddMeal = (newMeal: Meal) => {
     setMeals([...meals, newMeal])
     setShowAddMeal(false)
+    showToast('Repas ajouté avec succès', 'success')
   }
 
   const handleDeleteMeal = (id: string) => {
     setMeals(meals.filter(meal => meal.id !== id))
+    showToast('Repas supprimé avec succès', 'success')
   }
 
   const handleAddFoodReference = (food: FoodReference) => {
     setFoodReferences([...foodReferences, food])
+    showToast('Aliment ajouté avec succès', 'success')
   }
 
   const handleEditFoodReference = (food: FoodReference) => {
     setFoodReferences(foodReferences.map(f => f.id === food.id ? food : f))
+    showToast('Aliment modifié avec succès', 'success')
   }
 
   const handleDeleteFoodReference = (id: string) => {
     setFoodReferences(foodReferences.filter(f => f.id !== id))
+    showToast('Aliment supprimé avec succès', 'success')
   }
 
   const calculateDailyNutrition = () => {
@@ -97,18 +104,70 @@ function App() {
     }, { calories: 0, proteins: 0, carbs: 0, fats: 0 })
   }
 
+  const showToast = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
+    setToast({ message, type })
+  }
+
+  const getGreeting = () => {
+    const hour = new Date().getHours()
+    if (hour < 12) return 'Bonjour'
+    if (hour < 18) return 'Bon après-midi'
+    return 'Bonsoir'
+  }
+
+  const getSmiley = (percent: number) => {
+    if (percent >= 95 && percent <= 105) return '😃'
+    if (percent > 105) return '⚠️'
+    if (percent > 80) return '🙂'
+    return '😐'
+  }
+
   const renderContent = () => {
     switch (currentView) {
-      case 'dashboard':
+      case 'dashboard': {
+        const daily = calculateDailyNutrition()
+        const percent = (val: number, goal: number) => goal ? Math.round((val / goal) * 100) : 0
         return (
           <>
             <div className="mb-8">
-              <NutritionStats
-                goals={goals}
-                current={calculateDailyNutrition()}
-              />
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-900 mb-1">{getGreeting()} !</h1>
+                  <p className="text-gray-600">Voici votre suivi nutritionnel du jour.</p>
+                </div>
+                <div className="text-4xl">{getSmiley(percent(daily.calories, goals.calories))}</div>
+              </div>
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                <div className="bg-white rounded-lg shadow p-4">
+                  <div className="text-sm text-gray-500 mb-1">Calories</div>
+                  <div className="text-lg font-bold text-gray-900 mb-2">{daily.calories} / {goals.calories} kcal</div>
+                  <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
+                    <div className="h-3 rounded-full bg-red-500 transition-all" style={{ width: `${percent(daily.calories, goals.calories)}%` }} />
+                  </div>
+                </div>
+                <div className="bg-white rounded-lg shadow p-4">
+                  <div className="text-sm text-gray-500 mb-1">Protéines</div>
+                  <div className="text-lg font-bold text-gray-900 mb-2">{daily.proteins.toFixed(1)}g / {goals.proteins.toFixed(1)}g</div>
+                  <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
+                    <div className="h-3 rounded-full bg-blue-500 transition-all" style={{ width: `${percent(daily.proteins, goals.proteins)}%` }} />
+                  </div>
+                </div>
+                <div className="bg-white rounded-lg shadow p-4">
+                  <div className="text-sm text-gray-500 mb-1">Glucides</div>
+                  <div className="text-lg font-bold text-gray-900 mb-2">{daily.carbs.toFixed(1)}g / {goals.carbs.toFixed(1)}g</div>
+                  <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
+                    <div className="h-3 rounded-full bg-green-500 transition-all" style={{ width: `${percent(daily.carbs, goals.carbs)}%` }} />
+                  </div>
+                </div>
+                <div className="bg-white rounded-lg shadow p-4">
+                  <div className="text-sm text-gray-500 mb-1">Lipides</div>
+                  <div className="text-lg font-bold text-gray-900 mb-2">{daily.fats.toFixed(1)}g / {goals.fats.toFixed(1)}g</div>
+                  <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
+                    <div className="h-3 rounded-full bg-yellow-500 transition-all" style={{ width: `${percent(daily.fats, goals.fats)}%` }} />
+                  </div>
+                </div>
+              </div>
             </div>
-
             <div className="bg-white shadow rounded-lg p-6">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-lg font-medium text-gray-900">Repas du jour</h2>
@@ -119,7 +178,6 @@ function App() {
                   {showAddMeal ? 'Annuler' : 'Ajouter un repas'}
                 </button>
               </div>
-
               {showAddMeal && (
                 <div className="mb-8">
                   <AddMealForm 
@@ -128,11 +186,11 @@ function App() {
                   />
                 </div>
               )}
-
               <MealList meals={meals} onDeleteMeal={handleDeleteMeal} />
             </div>
           </>
         )
+      }
       case 'history':
         return (
           <div className="bg-white shadow rounded-lg p-6">
@@ -169,7 +227,9 @@ function App() {
         onViewChange={(view) => setCurrentView(view as typeof currentView)}
         onAddMeal={() => setShowAddMeal(true)}
       />
-      
+      {toast && (
+        <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />
+      )}
       <main className="w-full px-4 py-6 sm:px-6 lg:px-8">
         <div className="w-full">
           {renderContent()}
