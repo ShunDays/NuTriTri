@@ -46,6 +46,24 @@ const defaultFoodReferences: FoodReference[] = [
     carbs: 0.6,
     fats: 11.3,
     unit: 'unité'
+  },
+  {
+    id: '4',
+    name: 'Avocat',
+    calories: 160,
+    proteins: 2,
+    carbs: 9,
+    fats: 15,
+    unit: 'g'
+  },
+  {
+    id: '5',
+    name: 'Banane',
+    calories: 89,
+    proteins: 1.1,
+    carbs: 23,
+    fats: 0.3,
+    unit: 'g'
   }
 ]
 
@@ -127,75 +145,125 @@ function App() {
       case 'dashboard': {
         const daily = calculateDailyNutrition()
         const percent = (val: number, goal: number) => goal ? Math.round((val / goal) * 100) : 0
+        const todayMeals = meals.filter(meal => meal.date.startsWith(new Date().toISOString().split('T')[0]))
+        
         return (
-          <>
-            <div className="mb-8">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
+          <div className="space-y-6">
+            {/* En-tête avec salutation */}
+            <div className="card">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-900 mb-1">{getGreeting()} !</h1>
+                  <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">{getGreeting()} !</h1>
                   <p className="text-gray-600">Voici votre suivi nutritionnel du jour.</p>
                 </div>
-                <div className="text-4xl">{getSmiley(percent(daily.calories, goals.calories))}</div>
-              </div>
-              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-                <div className="bg-white rounded-lg shadow p-4">
-                  <div className="text-sm text-gray-500 mb-1">Calories</div>
-                  <div className="text-lg font-bold text-gray-900 mb-2">{daily.calories} / {goals.calories} kcal</div>
-                  <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
-                    <div className="h-3 rounded-full bg-red-500 transition-all" style={{ width: `${percent(daily.calories, goals.calories)}%` }} />
-                  </div>
-                </div>
-                <div className="bg-white rounded-lg shadow p-4">
-                  <div className="text-sm text-gray-500 mb-1">Protéines</div>
-                  <div className="text-lg font-bold text-gray-900 mb-2">{daily.proteins.toFixed(1)}g / {goals.proteins.toFixed(1)}g</div>
-                  <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
-                    <div className="h-3 rounded-full bg-blue-500 transition-all" style={{ width: `${percent(daily.proteins, goals.proteins)}%` }} />
-                  </div>
-                </div>
-                <div className="bg-white rounded-lg shadow p-4">
-                  <div className="text-sm text-gray-500 mb-1">Glucides</div>
-                  <div className="text-lg font-bold text-gray-900 mb-2">{daily.carbs.toFixed(1)}g / {goals.carbs.toFixed(1)}g</div>
-                  <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
-                    <div className="h-3 rounded-full bg-green-500 transition-all" style={{ width: `${percent(daily.carbs, goals.carbs)}%` }} />
-                  </div>
-                </div>
-                <div className="bg-white rounded-lg shadow p-4">
-                  <div className="text-sm text-gray-500 mb-1">Lipides</div>
-                  <div className="text-lg font-bold text-gray-900 mb-2">{daily.fats.toFixed(1)}g / {goals.fats.toFixed(1)}g</div>
-                  <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
-                    <div className="h-3 rounded-full bg-yellow-500 transition-all" style={{ width: `${percent(daily.fats, goals.fats)}%` }} />
-                  </div>
-                </div>
+                <div className="text-4xl sm:text-5xl mt-4 sm:mt-0">{getSmiley(percent(daily.calories, goals.calories))}</div>
               </div>
             </div>
-            <div className="bg-white shadow rounded-lg p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-lg font-medium text-gray-900">Repas du jour</h2>
+
+            {/* Statistiques nutritionnelles */}
+            <div className="grid-nutrition">
+              <div className="nutrition-card">
+                <div className="text-sm text-gray-500 mb-1">Calories</div>
+                <div className="text-lg font-bold text-gray-900 mb-2">
+                  {Math.round(daily.calories)} / {goals.calories} kcal
+                </div>
+                <div className="progress-bar">
+                  <div 
+                    className="progress-fill bg-red-500" 
+                    style={{ width: `${Math.min(percent(daily.calories, goals.calories), 100)}%` }} 
+                  />
+                </div>
+                <div className="text-xs text-gray-500 mt-1">{percent(daily.calories, goals.calories)}%</div>
+              </div>
+              
+              <div className="nutrition-card">
+                <div className="text-sm text-gray-500 mb-1">Protéines</div>
+                <div className="text-lg font-bold text-gray-900 mb-2">
+                  {daily.proteins.toFixed(1)}g / {goals.proteins}g
+                </div>
+                <div className="progress-bar">
+                  <div 
+                    className="progress-fill bg-blue-500" 
+                    style={{ width: `${Math.min(percent(daily.proteins, goals.proteins), 100)}%` }} 
+                  />
+                </div>
+                <div className="text-xs text-gray-500 mt-1">{percent(daily.proteins, goals.proteins)}%</div>
+              </div>
+              
+              <div className="nutrition-card">
+                <div className="text-sm text-gray-500 mb-1">Glucides</div>
+                <div className="text-lg font-bold text-gray-900 mb-2">
+                  {daily.carbs.toFixed(1)}g / {goals.carbs}g
+                </div>
+                <div className="progress-bar">
+                  <div 
+                    className="progress-fill bg-green-500" 
+                    style={{ width: `${Math.min(percent(daily.carbs, goals.carbs), 100)}%` }} 
+                  />
+                </div>
+                <div className="text-xs text-gray-500 mt-1">{percent(daily.carbs, goals.carbs)}%</div>
+              </div>
+              
+              <div className="nutrition-card">
+                <div className="text-sm text-gray-500 mb-1">Lipides</div>
+                <div className="text-lg font-bold text-gray-900 mb-2">
+                  {daily.fats.toFixed(1)}g / {goals.fats}g
+                </div>
+                <div className="progress-bar">
+                  <div 
+                    className="progress-fill bg-yellow-500" 
+                    style={{ width: `${Math.min(percent(daily.fats, goals.fats), 100)}%` }} 
+                  />
+                </div>
+                <div className="text-xs text-gray-500 mt-1">{percent(daily.fats, goals.fats)}%</div>
+              </div>
+            </div>
+
+            {/* Section des repas */}
+            <div className="card">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
+                <h2 className="section-title mb-0">Repas du jour ({todayMeals.length})</h2>
                 <button
                   onClick={() => setShowAddMeal(!showAddMeal)}
-                  className="btn-primary"
+                  className="btn-primary mt-4 sm:mt-0"
                 >
-                  {showAddMeal ? 'Annuler' : 'Ajouter un repas'}
+                  {showAddMeal ? 'Annuler' : '+ Ajouter un repas'}
                 </button>
               </div>
+              
               {showAddMeal && (
-                <div className="mb-8">
+                <div className="mb-8 p-4 bg-gray-50 rounded-lg">
                   <AddMealForm 
                     onAddMeal={handleAddMeal}
                     foodReferences={foodReferences}
                   />
                 </div>
               )}
-              <MealList meals={meals} onDeleteMeal={handleDeleteMeal} />
+              
+              <MealList meals={todayMeals} onDeleteMeal={handleDeleteMeal} />
+              
+              {todayMeals.length === 0 && !showAddMeal && (
+                <div className="text-center py-8 text-gray-500">
+                  <div className="text-4xl mb-2">🍽️</div>
+                  <p>Aucun repas enregistré aujourd'hui.</p>
+                  <p className="text-sm">Ajoutez votre premier repas pour commencer le suivi !</p>
+                </div>
+              )}
             </div>
-          </>
+          </div>
         )
       }
       case 'history':
         return (
-          <div className="bg-white shadow rounded-lg p-6">
-            <h2 className="text-lg font-medium text-gray-900 mb-6">Historique des repas</h2>
+          <div className="card">
+            <h2 className="section-title">Historique des repas</h2>
             <MealList meals={meals} onDeleteMeal={handleDeleteMeal} />
+            {meals.length === 0 && (
+              <div className="text-center py-8 text-gray-500">
+                <div className="text-4xl mb-2">📚</div>
+                <p>Aucun repas dans l'historique.</p>
+              </div>
+            )}
           </div>
         )
       case 'goals':
@@ -208,7 +276,7 @@ function App() {
         return <Menus />
       case 'foods':
         return (
-          <div className="bg-white shadow rounded-lg p-6">
+          <div className="card">
             <FoodDatabase
               foods={foodReferences}
               onAddFood={handleAddFoodReference}
@@ -227,13 +295,13 @@ function App() {
         onViewChange={(view) => setCurrentView(view as typeof currentView)}
         onAddMeal={() => setShowAddMeal(true)}
       />
+      
       {toast && (
         <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />
       )}
-      <main className="w-full px-4 py-6 sm:px-6 lg:px-8">
-        <div className="w-full">
-          {renderContent()}
-        </div>
+      
+      <main className="page-container">
+        {renderContent()}
       </main>
     </div>
   )
