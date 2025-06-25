@@ -4,7 +4,6 @@ import type { Meal, NutritionGoals, FoodReference } from './types'
 import { Navigation } from './components/Navigation'
 import { AddMealForm } from './components/AddMealForm'
 import { MealList } from './components/MealList'
-import { NutritionStats } from './components/NutritionStats'
 import { FoodDatabase } from './components/FoodDatabase'
 import Goals from './pages/Goals'
 import Preferences from './pages/Preferences'
@@ -69,7 +68,7 @@ const defaultFoodReferences: FoodReference[] = [
 
 function App() {
   const [meals, setMeals] = useLocalStorage<Meal[]>('meals', [])
-  const [goals, setGoals] = useLocalStorage<NutritionGoals>('goals', defaultGoals)
+  const [goals] = useLocalStorage<NutritionGoals>('goals', defaultGoals)
   const [foodReferences, setFoodReferences] = useLocalStorage<FoodReference[]>('foodReferences', defaultFoodReferences)
   const [showAddMeal, setShowAddMeal] = useState(false)
   const [currentView, setCurrentView] = useState<'dashboard' | 'history' | 'goals' | 'foods' | 'preferences' | 'recipes' | 'menus'>('dashboard')

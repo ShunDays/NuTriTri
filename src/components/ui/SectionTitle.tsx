@@ -1,7 +1,14 @@
-import { ReactNode } from 'react'
+import { type ReactNode } from 'react'
 
-export function SectionTitle({ children }: { children: ReactNode }) {
+interface SectionTitleProps {
+  children: ReactNode
+  className?: string
+}
+
+export function SectionTitle({ children, className = '' }: SectionTitleProps) {
   return (
-    <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">{children}</h2>
+    <h2 className={`text-xl font-semibold text-gray-900 mb-4 ${className}`}>
+      {children}
+    </h2>
   )
 } 

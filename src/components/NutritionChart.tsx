@@ -35,19 +35,6 @@ export function NutritionChart({ data, type }: NutritionChartProps) {
 
   const filteredData = data.slice(-(timeRange === 'week' ? 7 : 30))
 
-  const getValue = (item: DailyNutrition) => {
-    switch (type) {
-      case 'calories':
-        return item.totalCalories
-      case 'proteins':
-        return item.totalProteins
-      case 'carbs':
-        return item.totalCarbs
-      case 'fats':
-        return item.totalFats
-    }
-  }
-
   return (
     <div className="bg-white shadow rounded-lg p-6">
       <div className="flex justify-between items-center mb-6">

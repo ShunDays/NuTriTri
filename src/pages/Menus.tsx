@@ -1,12 +1,10 @@
 import { useState, useEffect } from 'react'
-import type { Menu, MenuDay, Meal, Recipe } from '../types'
+import type { Menu, MenuDay, Meal } from '../types'
 
 const LOCAL_STORAGE_KEY = 'nutritri_menus'
-const RECIPES_STORAGE_KEY = 'nutritri_recipes'
 
 export default function Menus() {
   const [menus, setMenus] = useState<Menu[]>([])
-  const [recipes, setRecipes] = useState<Recipe[]>([])
   const [showForm, setShowForm] = useState(false)
   const [name, setName] = useState('')
   const [days, setDays] = useState<MenuDay[]>([])
@@ -16,9 +14,7 @@ export default function Menus() {
 
   useEffect(() => {
     const savedMenus = localStorage.getItem(LOCAL_STORAGE_KEY)
-    const savedRecipes = localStorage.getItem(RECIPES_STORAGE_KEY)
     if (savedMenus) setMenus(JSON.parse(savedMenus))
-    if (savedRecipes) setRecipes(JSON.parse(savedRecipes))
   }, [])
 
   const addMealToDay = () => {
